@@ -1,4 +1,4 @@
-﻿using Library.Communication.Errors;
+﻿using Library.Communication.Results;
 
 namespace Library.Communication.MessagesError;
 

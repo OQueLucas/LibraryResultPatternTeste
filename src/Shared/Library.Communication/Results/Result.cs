@@ -1,6 +1,6 @@
 ﻿using System.Diagnostics.CodeAnalysis;
 
-namespace Library.Communication.Errors;
+namespace Library.Communication.Results;
 
 public class Result
 {

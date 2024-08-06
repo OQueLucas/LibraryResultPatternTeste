@@ -1,4 +1,4 @@
-﻿using Library.Communication.Errors;
+﻿using Library.Communication.Results;
 using Library.Communication.Requests;
 using Library.Communication.Responses;
 

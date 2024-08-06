@@ -1,6 +1,6 @@
 ﻿using AutoMapper;
 using Library.Application.Interfaces;
-using Library.Communication.Errors;
+using Library.Communication.Results;
 using Library.Communication.MessagesError;
 using Library.Communication.Requests;
 using Library.Communication.Responses;

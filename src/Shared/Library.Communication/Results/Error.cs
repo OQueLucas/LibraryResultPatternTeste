@@ -1,4 +1,4 @@
-﻿namespace Library.Communication.Errors;
+﻿namespace Library.Communication.Results;
 
 public record Error
 {
