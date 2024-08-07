@@ -1,9 +1,10 @@
 ﻿using AutoMapper;
 using Library.Application.Interfaces;
-using Library.Communication.Results;
+using Library.Application.Validation;
 using Library.Communication.MessagesError;
 using Library.Communication.Requests;
 using Library.Communication.Responses;
+using Library.Communication.Results;
 using Library.Domain.Entities;
 using Library.Domain.Interfaces;
 
@@ -47,10 +48,20 @@ public class BookService(IBookRepository repository, IMapper mapper) : IBookServ
 
     public async Task<Result> AddAsync(RequestBook request)
     {
+        var validator = new CreateBookValidator();
+
+        var result = validator.Validate(request);
+
+        if (!result.IsValid)
+        {
+            var errorMessages = result.Errors.Select(error => error.ErrorMessage).ToList();
+            return Result.Failure(Error.Validation("Books.Validation", errorMessages));
+        }
+
         var queryBook = GetByIsbnAsync(request.ISBN);
 
         if (queryBook.Result is not null)
-            return Result.Failure(BookErrors.IsbnNotUnique);
+            return Result.Failure(BookErrors.IsbnNotUnique());
 
         var book = _mapper.Map<Book>(request);
 
