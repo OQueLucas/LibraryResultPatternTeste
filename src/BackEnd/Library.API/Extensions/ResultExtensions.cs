@@ -18,7 +18,7 @@ public static class ResultExtensions
             type: GetType(errorType),
             extensions: new Dictionary<string, object?>
             {
-                { "errors", new[] { result.Error } }
+                { "error", result.Error }
             });
     }
 
