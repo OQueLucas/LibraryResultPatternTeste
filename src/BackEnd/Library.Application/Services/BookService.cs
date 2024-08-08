@@ -52,15 +52,9 @@ public class BookService(IBookRepository repository, IMapper mapper) : IBookServ
 
         var result = validator.Validate(request);
 
-        if (!result.IsValid)
-        {
-            var errorMessages = result.Errors.Select(error => error.ErrorMessage).ToList();
-            return Error.Validation("Books.Validation", errorMessages);
-        }
-
         var queryBook = GetByIsbnAsync(request.ISBN);
 
-        if (queryBook.Result is not null)
+        if (queryBook.Result.IsSuccess)
             return BookErrors.IsbnNotUnique();
 
         var book = _mapper.Map<Book>(request);
