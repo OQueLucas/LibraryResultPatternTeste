@@ -14,7 +14,7 @@ public class CategoriesController(ICategoryService categoryService) : Controller
     {
         var result = await categoryService.GetAllAsync();
 
-        if (!result.IsSuccess)
+        if (result.IsFailure)
             return result.ToProblemDetails();
 
         return Results.Ok(result.Value);
@@ -25,7 +25,7 @@ public class CategoriesController(ICategoryService categoryService) : Controller
     {
         var result = await categoryService.GetByIdAsync(id);
 
-        if (!result.IsSuccess)
+        if (result.IsFailure)
             return result.ToProblemDetails();
 
         return Results.Ok(result.Value);
@@ -36,7 +36,7 @@ public class CategoriesController(ICategoryService categoryService) : Controller
     {
         var result = await categoryService.AddAsync(request);
 
-        if (!result.IsSuccess)
+        if (result.IsFailure)
             return result.ToProblemDetails();
 
         return Results.Created(nameof(GetById), new { id = request.Id, request });
@@ -47,7 +47,7 @@ public class CategoriesController(ICategoryService categoryService) : Controller
     {
         var result = await categoryService.UpdateAsync(id, request);
 
-        if (!result.IsSuccess)
+        if (result.IsFailure)
             return result.ToProblemDetails();
 
         return Results.NoContent();

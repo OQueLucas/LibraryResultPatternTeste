@@ -14,7 +14,7 @@ public class BooksController(IBookService bookService) : ControllerBase
     {
         var result = await bookService.GetAllAsync();
 
-        if (!result.IsSuccess)
+        if (result.IsFailure)
             return result.ToProblemDetails();
 
         return Results.Ok(result.Value);
@@ -25,7 +25,7 @@ public class BooksController(IBookService bookService) : ControllerBase
     {
         var result = await bookService.GetByIdAsync(id);
 
-        if (!result.IsSuccess)
+        if (result.IsFailure)
             return result.ToProblemDetails();
 
         return Results.Ok(result.Value);
@@ -36,7 +36,7 @@ public class BooksController(IBookService bookService) : ControllerBase
     {
         var result = await bookService.GetByIsbnAsync(isbn);
 
-        if (!result.IsSuccess)
+        if (result.IsFailure)
             return result.ToProblemDetails();
 
         return Results.Ok(result.Value);
@@ -47,7 +47,7 @@ public class BooksController(IBookService bookService) : ControllerBase
     {
         var result = await bookService.AddAsync(request);
 
-        if (!result.IsSuccess)
+        if (result.IsFailure)
             return result.ToProblemDetails();
 
         return Results.Created(nameof(GetById), new { id = request.Id, request });
@@ -58,7 +58,7 @@ public class BooksController(IBookService bookService) : ControllerBase
     {
         var result = await bookService.UpdateAsync(id, request);
 
-        if (!result.IsSuccess)
+        if (result.IsFailure)
             return result.ToProblemDetails();
 
         return Results.NoContent();
