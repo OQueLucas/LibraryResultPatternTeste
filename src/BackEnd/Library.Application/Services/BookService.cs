@@ -48,9 +48,10 @@ public class BookService(IBookRepository repository, IMapper mapper) : IBookServ
 
     public async Task<Result> AddAsync(RequestBook request)
     {
-        var validator = new CreateBookValidator();
+        var errors = ValidateBook(request);
 
-        var result = validator.Validate(request);
+        if (errors.Any())
+            return Result.Failure(new ValidationError(errors));
 
         var queryBook = GetByIsbnAsync(request.ISBN);
 
@@ -84,5 +85,24 @@ public class BookService(IBookRepository repository, IMapper mapper) : IBookServ
         await _repository.SaveChangesAsync();
 
         return Result.Success();
+    }
+
+    private List<Error> ValidateBook(RequestBook request)
+    {
+        List<Error> errors = [];
+
+        var validator = new CreateBookValidator();
+
+        var result = validator.Validate(request);
+
+        if (result.IsValid)
+            return errors;
+
+        foreach (var error in result.Errors)
+        {
+            errors.Add(new Error("Books.Validation", error.ErrorMessage, ErrorType.Validation));
+        }
+
+        return errors;
     }
 }
