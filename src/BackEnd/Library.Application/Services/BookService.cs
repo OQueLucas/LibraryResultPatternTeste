@@ -17,9 +17,9 @@ public class BookService(IBookRepository repository, IMapper mapper) : IBookServ
     public async Task<Result<IEnumerable<ResponseBook>>> GetAllAsync()
     {
         var books = await _repository.GetAllWithCategoryAsync();
-        var response = _mapper.Map<IEnumerable<ResponseBook>>(books);
+        var response = _mapper.Map<List<ResponseBook>>(books);
 
-        return Result.Success(response);
+        return response;
     }
 
     public async Task<Result<ResponseBook>> GetByIdAsync(Guid id)
@@ -27,11 +27,11 @@ public class BookService(IBookRepository repository, IMapper mapper) : IBookServ
         var book = await _repository.GetByIdAsync(id);
 
         if (book is null)
-            return Result.Failure<ResponseBook>(BookErrors.NotFound(id));
+            return BookErrors.NotFound(id);
 
         var response = _mapper.Map<ResponseBook>(book);
 
-        return Result.Success(response);
+        return response;
     }
 
     public async Task<Result<ResponseBook>> GetByIsbnAsync(string isbn)
@@ -39,11 +39,11 @@ public class BookService(IBookRepository repository, IMapper mapper) : IBookServ
         var book = await _repository.GetByIsbnAsync(isbn);
 
         if (book is null)
-            return Result.Failure<ResponseBook>(BookErrors.NotFoundByISBN(isbn));
+            return BookErrors.NotFoundByISBN(isbn);
 
         var response = _mapper.Map<ResponseBook>(book);
 
-        return Result.Success(response);
+        return response;
     }
 
     public async Task<Result> AddAsync(RequestBook request)
@@ -55,13 +55,13 @@ public class BookService(IBookRepository repository, IMapper mapper) : IBookServ
         if (!result.IsValid)
         {
             var errorMessages = result.Errors.Select(error => error.ErrorMessage).ToList();
-            return Result.Failure(Error.Validation("Books.Validation", errorMessages));
+            return Error.Validation("Books.Validation", errorMessages);
         }
 
         var queryBook = GetByIsbnAsync(request.ISBN);
 
         if (queryBook.Result is not null)
-            return Result.Failure(BookErrors.IsbnNotUnique());
+            return BookErrors.IsbnNotUnique();
 
         var book = _mapper.Map<Book>(request);
 
@@ -74,7 +74,7 @@ public class BookService(IBookRepository repository, IMapper mapper) : IBookServ
     public async Task<Result> UpdateAsync(Guid id, RequestBook request)
     {
         if (id != request.Id) 
-            return Result.Failure(BookErrors.DifferentId(id, request.Id));
+            return BookErrors.DifferentId(id, request.Id);
 
         var book = _mapper.Map<Book>(request);
 
