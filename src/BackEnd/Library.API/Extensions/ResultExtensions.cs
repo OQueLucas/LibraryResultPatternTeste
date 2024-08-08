@@ -16,10 +16,7 @@ public static class ResultExtensions
             statusCode: GetStatusCode(errorType),
             title: GetTitle(errorType),
             type: GetType(errorType),
-            extensions: new Dictionary<string, object?>
-            {
-                { "error", result.Error }
-            });
+            extensions: GetErrors(result));
     }
 
     static int GetStatusCode(ErrorType errorType) =>
@@ -48,4 +45,20 @@ public static class ResultExtensions
             ErrorType.Conflict => "https://datatracker.ietf.org/doc/html/rfc7231#section-6.5.8",
             _ => "https://datatracker.ietf.org/doc/html/rfc7231#section-6.6.1"
         };
+
+    static Dictionary<string, object?> GetErrors(Result result)
+    {
+        if (result.Error is not ValidationError validationError)
+        {
+            return new Dictionary<string, object?>
+            {
+                { "errors", result.Error }
+            };
+        }
+
+        return new Dictionary<string, object?>
+        {
+            { "errors", validationError.Errors }
+        };
+    }
 }
