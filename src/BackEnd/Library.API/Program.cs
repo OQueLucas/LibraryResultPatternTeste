@@ -1,3 +1,4 @@
+using Library.API.Extensions;
 using Library.Application.AutoMapper;
 using Library.Application.Interfaces;
 using Library.Application.Services;
@@ -10,6 +11,8 @@ var builder = WebApplication.CreateBuilder(args);
 
 builder.Services.AddControllers();
 builder.Services.AddSwaggerGen();
+
+builder.Services.AddExceptionHandler<GlobalExceptionHandler>();
 
 builder.Services.AddDbContext<LibraryDbContext>(options =>
     options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
@@ -36,6 +39,8 @@ if (app.Environment.IsDevelopment())
 }
 
 app.UseHttpsRedirection();
+
+app.UseExceptionHandler(opt => { });
 
 app.UseAuthorization();
 
